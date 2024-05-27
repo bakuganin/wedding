@@ -225,15 +225,15 @@
                                 <div class="w-layout-grid uui-contact04_component">
                                     <div class="uui-contact04_form-wrapper w-form">
                                         
-                                        <form id="wf-form-Contact-04-form" name="wf-form-Contact-04-form" method="post" action="save_form.php" class="uui-contact04_form">
+                                        <form id="wf-form-Contact-04-form" name="wf-form-Contact-04-form" method="post" action="/api/save_form" class="uui-contact04_form">
                                             <div class="form-field-2col">
                                                 <div class="uui-form-field-wrapper">
-                                                    <label for="Contact-04-first-name" class="uui-field-label">Ваше Имя и Фамилия</label>
-                                                    <input class="uui-form_input w-input" maxlength="256" name="Contact-04-first-name" placeholder="Иван Иванов, Мария Иванова..." type="text" id="Contact-04-first-name" required=""/>
+                                                    <label for="name" class="uui-field-label">Ваше Имя и Фамилия</label>
+                                                    <input class="uui-form_input w-input" maxlength="256" name="name" placeholder="Иван Иванов, Мария Иванова..." type="text" id="name" required=""/>
                                                 </div>
                                             </div>
                                             <div class="uui-form-field-wrapper">
-                                                <label for="Contact-2-Select-4" class="uui-field-label">Планируете ли Вы присутствовать на свадьбе?</label>
+                                                <label class="uui-field-label">Планируете ли Вы присутствовать на свадьбе?</label>
                                                 <div class="w-layout-grid form-radio-2col">
                                                     <label class="uui-form-radio-2 w-radio">
                                                         <div class="w-form-formradioinput w-form-formradioinput--inputType-custom uui-form-radio-icon-2 w-radio-input"></div>
@@ -249,14 +249,14 @@
                                             </div>
                                             <div class="form-field-2col">
                                                 <div class="uui-form-field-wrapper">
-                                                    <label for="Contact-04-phone" class="uui-field-label">Оставьте свой любимый музыкальный трек:</label>
-                                                    <input class="uui-form_input w-input" maxlength="256" name="Contact-04-phone" placeholder="Bruno Mars - Just the way you are" type="text" id="Contact-04-phone"/>
+                                                    <label for="song" class="uui-field-label">Оставьте свой любимый музыкальный трек:</label>
+                                                    <input class="uui-form_input w-input" maxlength="256" name="song" placeholder="Bruno Mars - Just the way you are" type="text" id="song"/>
                                                 </div>
                                             </div>
                                             <div class="uui-form-button-wrapper">
                                                 <input type="submit" class="uui-button w-button" value="Отправить"/>
                                             </div>
-                                        </form>                                        
+                                        </form>                                                                   
 
                                         <div class="success-message-3 w-form-done">
                                             <div class="success-text">Thank you! Your submission has been received!</div>
@@ -366,5 +366,40 @@
                 touchpadSupport: true,
             })
         </script>
+        <script>
+            // Обработка формы сообщений
+            document.getElementById('wf-form-Contact-04-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                var form = event.target;
+                var formData = new FormData(form);
+            
+                fetch('/api/save_form', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: formData.get('name'),
+                        attendance: formData.get('attendance'),
+                        song: formData.get('song')
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.message === 'Email sent successfully') {
+                        document.querySelector('.success-message-3').style.display = 'block';
+                        document.querySelector('.error-message-3').style.display = 'none';
+                    } else {
+                        document.querySelector('.success-message-3').style.display = 'none';
+                        document.querySelector('.error-message-3').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    document.querySelector('.success-message-3').style.display = 'none';
+                    document.querySelector('.error-message-3').style.display = 'block';
+                });
+            });
+            </script>
+            
     </body>
 </html>
