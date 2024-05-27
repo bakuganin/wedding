@@ -1,18 +1,26 @@
 <?php
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['Contact-04-first-name'];
+    // Получение данных из формы
+    $name = $_POST['name'];
     $attendance = $_POST['attendance'];
-    $song = $_POST['Contact-04-phone'];
+    $song = $_POST['song'];
 
+    // Настройка отправки почты
     $to = "jegorbakunin@gmail.com";
-    $subject = "Новая свадьба, ответ на приглашение.";
-    $message = "Имя: $name\nБудете ли вы присутствовать?: $attendance\nЛюбимая песня: $song";
-    $headers = "От: webmaster@example.com";
+    $subject = "New Wedding RSVP";
+    $message = "Name: $name\nAttendance: $attendance\nFavorite Song: $song";
+    $headers = "From: roybak7@gmail.com";
 
+    // Отправка почты
     if (mail($to, $subject, $message, $headers)) {
-        echo "success";
+        echo json_encode(["message" => "Email sent successfully"]);
     } else {
-        echo "error";
+        http_response_code(500);
+        echo json_encode(["error" => "Failed to send email"]);
     }
+} else {
+    http_response_code(405);
+    echo "Method " . $_SERVER['REQUEST_METHOD'] . " Not Allowed";
 }
 ?>
